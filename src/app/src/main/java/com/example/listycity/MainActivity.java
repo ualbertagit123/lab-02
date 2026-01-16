@@ -1,4 +1,4 @@
-package com.example.lab2app;
+package com.example.listycity;
 
 import android.os.Bundle;
 
