@@ -3,6 +3,7 @@ package com.example.listycity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> cityAdapter;
     ArrayList<String> dataList;
 
-    private boolean addCity = true;
+    int currentSelection = -1;
+
+    //private boolean addCity = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +57,16 @@ public class MainActivity extends AppCompatActivity {
 
         Group inputGroup = findViewById(R.id.input_group);
 
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentSelection = position;
+            }
+        });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addCity = true;
+                //addCity = true;
                 inputGroup.setVisibility(View.VISIBLE);
                 cityInput.requestFocus();
             }
@@ -64,9 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addCity = false;
-                inputGroup.setVisibility(View.VISIBLE);
-                cityInput.requestFocus();
+                if (currentSelection != -1) {
+                    String removedCity = dataList.get(currentSelection);
+                    dataList.remove(currentSelection);
+                    cityAdapter.notifyDataSetChanged();
+                    cityList.clearChoices();
+                    currentSelection = -1;
+                }
+                else {}
             }
         });
 
@@ -75,15 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 String input = cityInput.getText().toString();
                 if (input.isEmpty()) {}
 
-                if (addCity) {
-                    dataList.add(input);
-                }
-                else {
-                    if (dataList.contains(input)) {
-                        dataList.remove(input);
-                    }
-                    else {}
-                }
+                dataList.add(input);
 
                 cityInput.setText("");
                 inputGroup.setVisibility(View.GONE);
